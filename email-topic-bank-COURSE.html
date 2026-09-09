@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Topic Bank | Whitney Bateson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+/* ============================================================
+   WBDS BRAND TOKENS — matches offers.whitneybateson.com
+   ============================================================ */
+:root {
+  --cream:  #efeae3;
+  --pink:   #ffcdcd;
+  --coral:  #ff7f50;
+  --lime:   #e3f696;
+  --sky:    #aed3dd;
+  --teal:   #02525d;
+  --peach:  #fdad8f;
+  --text:   #262d32;
+  --white:  #ffffff;
+  --rule:   #d3d1c7;
+  --muted:  #6b6b6b;
+
+  /* Bucket tints — each topic card is colour-coded by its bucket. */
+  --outcomes:    var(--lime);
+  --features:    var(--sky);
+  --hesitations: var(--peach);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html {
+  font-family:'Nunito Sans', sans-serif;
+  color:var(--text);
+  font-size:19px;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+body { background:var(--cream); }
+
+h1, h2, h3 { font-family:'Playfair Display', serif; font-weight:400; line-height:1.25; }
+
+/* ─── NAV ─── */
+.site-nav {
+  background:var(--white); padding:16px 48px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid rgba(0,0,0,0.07);
+}
+.nav-logo {
+  font-family:'Playfair Display', serif; font-style:italic;
+  font-size:20px; color:var(--teal); text-decoration:none; letter-spacing:0.02em;
+}
+.nav-cta {
+  background:var(--coral); color:var(--white); border:none;
+  padding:11px 24px; border-radius:50px;
+  font-family:'Nunito Sans', sans-serif; font-size:15px; font-weight:600;
+  text-transform:uppercase; letter-spacing:0.06em;
+  text-decoration:none; display:inline-block;
+  transition:transform .15s, box-shadow .15s;
+}
+.nav-cta:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(255,127,80,0.35); }
+
+/* ─── HERO ─── */
+.hero {
+  position:relative; min-height:74vh; overflow:hidden;
+  display:flex; align-items:center; justify-content:center; width:100%;
+}
+.hero-media { position:absolute; inset:0; z-index:0; overflow:hidden; }
+.hero-video {
+  width:100%; height:100%; object-fit:cover; object-position:center; display:block;
+  animation:heroDrift 28s ease-in-out infinite alternate;
+  transform-origin:center 30%;
+}
+.hero-media::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(to bottom, rgba(2,82,93,0.70) 0%, rgba(2,82,93,0.82) 100%);
+}
+/* Drift gives the poster some life while no footage is present.
+   It switches itself off as soon as real video starts playing. */
+@keyframes heroDrift {
+  from { transform:scale(1); }
+  to   { transform:scale(1.09); }
+}
+.hero-video.is-playing { animation:none; transform:none; }
+
+.hero-copy {
+  position:relative; z-index:2; width:100%; max-width:900px;
+  padding:88px 48px; text-align:center; color:var(--white);
+}
+.hero-label {
+  font-size:15px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--lime); margin-bottom:22px;
+}
+.hero h1 { font-size:clamp(44px, 6vw, 72px); color:var(--white); margin-bottom:24px; }
+.hero-sub {
+  font-size:21px; color:rgba(255,255,255,0.9); line-height:1.6;
+  max-width:660px; margin:0 auto 38px;
+}
+
+
+/* ─── LOGIN GATE ─── */
+.gate-backdrop {
+  position:fixed; inset:0; z-index:200; background:rgba(2,82,93,0.94);
+  display:flex; align-items:center; justify-content:center; padding:24px;
+  overflow-y:auto;
+}
+.gate-card {
+  background:var(--white); border-radius:24px; padding:48px 52px;
+  max-width:520px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.3);
+}
+.gate-card h2 { font-size:34px; color:var(--teal); margin-bottom:12px; line-height:1.2; }
+.gate-card > p { font-size:17px; color:var(--muted); margin-bottom:28px; }
+.gate-field { margin-bottom:18px; }
+.gate-field label {
+  display:block; font-size:14px; font-weight:600; color:var(--teal);
+  margin-bottom:7px; letter-spacing:0.02em;
+}
+.gate-error { font-size:15px; color:#b1442c; margin-top:14px; min-height:22px; }
+.gate-fine { font-size:14px; color:var(--muted); margin-top:20px; line-height:1.5; }
+.gate-card .btn { width:100%; margin-top:10px; }
+.save-status {
+  font-size:14px; color:var(--muted); font-style:italic;
+  text-align:right; min-height:20px; margin-top:10px;
+}
+@media (max-width:600px){ .gate-card { padding:34px 26px; } .gate-card h2 { font-size:27px; } }
+
+/* ─── TOOL SECTION ─── */
+.tool {
+  /* Ends on a blush between cream and pink, not full --pink: the
+     Hesitations bucket is peach, and peach on pink stops reading. */
+  background:linear-gradient(180deg, var(--cream) 0%, var(--cream) 25%, #f7dbd8 100%);
+  padding:80px 32px 100px;
+}
+.wrap { max-width:860px; margin:0 auto; }
+
+/* ─── STEP TABS ─── */
+.steps { display:flex; gap:12px; justify-content:center; margin:0 0 52px; padding:0; background:none; border:none; }
+.step {
+  background:transparent; border:1.5px solid var(--rule); color:var(--muted);
+  font-family:'Nunito Sans', sans-serif; font-size:14px; font-weight:700;
+  letter-spacing:0.07em; text-transform:uppercase;
+  padding:12px 28px; border-radius:50px; cursor:pointer; transition:all .18s;
+}
+.step:hover { border-color:var(--coral); color:var(--coral); }
+.step.active { background:var(--teal); border-color:var(--teal); color:var(--white); }
+.step:focus-visible { outline:2px solid var(--coral); outline-offset:3px; }
+
+/* ─── FORM ─── */
+label.field { display:block; font-family:'Playfair Display', serif; font-size:clamp(28px,3.4vw,36px); color:var(--teal); margin-bottom:14px; line-height:1.2; }
+.helper { font-size:17px; color:var(--muted); margin:14px 0 0; max-width:62ch; }
+.desc { font-size:17px; color:var(--muted); margin:0 0 18px; max-width:62ch; }
+
+input[type=text], select {
+  width:100%; font-family:'Nunito Sans', sans-serif; font-size:18px; color:var(--text);
+  background:var(--white); border:1.5px solid var(--rule); border-radius:10px;
+  padding:14px 16px; transition:border-color .15s;
+}
+input[type=text]::placeholder { color:#a9a49c; }
+input[type=text]:focus, select:focus { outline:none; border-color:var(--coral); }
+
+.service-row {
+  margin-bottom:44px; padding-bottom:40px;
+  border-bottom:1px solid rgba(2,82,93,0.14);
+}
+
+.bucket {
+  margin-bottom:28px; padding:36px 40px; border-radius:22px;
+  background:var(--bucket-wash);
+  border-left:6px solid var(--bucket-color);
+}
+.bucket-head { display:flex; align-items:baseline; gap:16px; margin-bottom:12px; flex-wrap:wrap; }
+.bucket-num {
+  display:inline-block; background:var(--bucket-color); color:var(--teal);
+  font-family:'Nunito Sans', sans-serif; font-size:12px; font-weight:700;
+  letter-spacing:0.11em; text-transform:uppercase;
+  padding:6px 15px; border-radius:100px;
+}
+.bucket-head h3 { font-size:36px; color:var(--teal); line-height:1.1; }
+.idea-row { display:flex; align-items:center; gap:14px; margin-bottom:12px; }
+.idea-row .idx {
+  font-family:'Playfair Display', serif; font-size:26px; color:var(--teal);
+  opacity:.42; width:24px; flex:0 0 auto; text-align:right; line-height:1;
+}
+
+/* ─── BUTTONS ─── */
+.btn {
+  display:inline-block; background:var(--coral); color:var(--white);
+  border:none; padding:16px 38px; border-radius:50px;
+  font-family:'Nunito Sans', sans-serif; font-size:16px; font-weight:700;
+  text-transform:uppercase; letter-spacing:0.06em; cursor:pointer;
+  text-decoration:none; transition:transform .15s, box-shadow .15s;
+}
+.btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(255,127,80,0.4); }
+.btn-outline {
+  background:transparent; color:var(--coral); border:2px solid var(--coral);
+  padding:14px 30px;
+}
+.btn-outline:hover { background:var(--coral); color:var(--white); }
+.btn-small { padding:10px 22px; font-size:13px; }
+.btn:focus-visible { outline:2px solid var(--teal); outline-offset:3px; }
+.actions { display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-top:40px; }
+
+/* ─── BANK ─── */
+.bank-head { margin-bottom:24px; }
+.bank-head h2 { font-size:clamp(30px,3.4vw,38px); color:var(--teal); margin-bottom:10px; }
+.bank-head p { font-size:17px; color:var(--muted); max-width:62ch; }
+.bank-head-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:20px; }
+
+.cadence-note {
+  background:var(--white); border-radius:16px; padding:22px 26px;
+  font-size:17px; color:var(--text); line-height:1.6; margin:26px 0 32px;
+  border-left:5px solid var(--coral);
+}
+
+.filters { display:flex; flex-wrap:wrap; gap:9px; margin-bottom:20px; }
+.chip {
+  font-family:'Nunito Sans', sans-serif; font-size:13px; font-weight:600;
+  letter-spacing:0.03em; padding:8px 17px; border-radius:50px;
+  border:1.5px solid var(--rule); background:var(--white); color:var(--muted);
+  cursor:pointer; transition:all .15s;
+}
+.chip:hover { border-color:var(--coral); color:var(--coral); }
+.chip.active { background:var(--teal); border-color:var(--teal); color:var(--white); }
+.chip:focus-visible { outline:2px solid var(--coral); outline-offset:2px; }
+
+.toggle-row { margin-bottom:28px; }
+.toggle-row label {
+  display:inline-flex; align-items:center; gap:10px;
+  font-size:16px; color:var(--muted); cursor:pointer;
+}
+
+.card-grid { display:grid; gap:20px; }
+.card {
+  background:var(--white); border-radius:20px; padding:30px 34px;
+  border-left:5px solid var(--bucket-color);
+  box-shadow:0 2px 16px rgba(0,0,0,0.06);
+  transition:transform .2s, opacity .2s;
+}
+.card:hover { transform:translateY(-2px); }
+.card.used { opacity:.45; }
+.card.used:hover { transform:none; }
+
+.card .tag {
+  display:inline-block; background:var(--bucket-color); color:var(--teal);
+  font-family:'Nunito Sans', sans-serif; font-size:12px; font-weight:700;
+  letter-spacing:0.1em; text-transform:uppercase;
+  padding:6px 15px; border-radius:100px; margin-bottom:16px;
+}
+.card .topic {
+  font-family:'Playfair Display', serif; font-size:26px; font-weight:400;
+  color:var(--text); line-height:1.3; margin-bottom:22px; max-width:48ch;
+}
+.card select { font-size:16px; padding:11px 14px; margin-bottom:14px; }
+.structure-hint { font-size:16px; color:var(--muted); line-height:1.55; margin-bottom:20px; max-width:56ch; }
+.card-actions { display:flex; flex-wrap:wrap; gap:18px; align-items:center; }
+.used-toggle { display:inline-flex; align-items:center; gap:8px; font-size:16px; color:var(--muted); cursor:pointer; }
+
+.approach-box { margin-top:22px; }
+.approach-box:empty { margin-top:0; }
+.approach-box ul {
+  list-style:none; background:var(--cream); border-radius:14px; padding:22px 26px;
+  display:flex; flex-direction:column; gap:11px;
+}
+.approach-box li { font-size:17px; line-height:1.55; padding-left:26px; position:relative; }
+.approach-box li::before { content:'\2713'; position:absolute; left:0; color:var(--coral); font-weight:700; }
+.approach-loading { font-size:17px; color:var(--muted); font-style:italic; }
+
+.hidden { display:none; }
+
+footer {
+  margin-top:48px; text-align:center;
+  font-size:17px; color:var(--muted); font-style:italic;
+  max-width:62ch; margin-left:auto; margin-right:auto;
+}
+
+.site-footer {
+  background:var(--text); color:rgba(255,255,255,0.5);
+  text-align:center; padding:28px 48px; font-size:14px;
+}
+.site-footer a { color:rgba(255,255,255,0.5); }
+
+@media (prefers-reduced-motion:reduce) {
+  * { transition:none !important; animation:none !important; }
+}
+@media (max-width:768px) {
+  html { font-size:18px; }
+  .site-nav { padding:14px 22px; }
+  .hero { min-height:auto; }
+  .hero-media::after { background:linear-gradient(to bottom, rgba(2,82,93,0.55) 0%, rgba(2,82,93,0.88) 60%, rgba(2,82,93,0.95) 100%); }
+  .hero-copy { padding:64px 24px 72px; }
+  .tool { padding:56px 20px 76px; }
+  .card { padding:26px 24px; }
+  .steps { flex-direction:column; }
+  .step { width:100%; }
+  .actions .btn { width:100%; text-align:center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── LOGIN GATE ─── -->
+<div class="gate-backdrop" id="gate">
+  <div class="gate-card">
+    <h2>Let's get your topic bank started</h2>
+    <p id="gateIntro"></p>
+    <div class="gate-field">
+      <label for="gateName">First name</label>
+      <input type="text" id="gateName" placeholder="Whitney" autocomplete="given-name">
+    </div>
+    <div class="gate-field">
+      <label for="gateEmail">Email address</label>
+      <input type="text" id="gateEmail" placeholder="you@yourpractice.com" autocomplete="email" inputmode="email">
+    </div>
+    <button class="btn" id="gateBtn" type="button">Start &#8594;</button>
+    <div class="gate-error" id="gateError"></div>
+    <p class="gate-fine" id="gateFine"></p>
+  </div>
+</div>
+
+<!-- ─── NAV ─── -->
+<nav class="site-nav">
+  <a class="nav-logo" href="https://whitneybateson.com">Whitney Bateson</a>
+  <a class="nav-cta" href="#tool">Get Started &#8594;</a>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-media">
+    <video class="hero-video"
+           autoplay muted loop playsinline preload="auto"
+           poster="hero-poster.jpg">
+      <source src="hero-loop.webm" type="video/webm">
+      <source src="hero-loop.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="hero-copy">
+    <div class="hero-label">The Two-Step Sales Email Framework</div>
+    <h1>Email Topic Bank</h1>
+    <p class="hero-sub">A place to generate what to write about &mdash; never what to say. Fill the drawer, match it to a structure, and build a bank of email topics you can come back to any time.</p>
+    <a href="#tool" class="btn">Get Started &#8594;</a>
+  </div>
+</section>
+
+<!-- ─── TOOL ─── -->
+<section class="tool" id="tool">
+  <div class="wrap">
+
+    <nav class="steps">
+      <button class="step active" id="tab1" type="button">Step 1 &mdash; Brainstorm</button>
+      <button class="step" id="tab2" type="button">Step 2 &mdash; Match &amp; Bank</button>
+    </nav>
+
+    <!-- ========== PANEL 1 ========== -->
+    <div id="panel1">
+      <div class="service-row">
+        <label class="field" for="serviceInput">The one service you're focusing on</label>
+        <input type="text" id="serviceInput" style="font-size:20px;padding:18px 20px;" placeholder="e.g. my 1:1 gut health coaching program">
+        <p class="helper">Pick one service, program, or package. If you help a wide range of people, just think of one type of client while you fill this in &mdash; you can always come back and run this again for another.</p>
+      </div>
+
+      <div class="bucket" style="--bucket-color:var(--outcomes); --bucket-wash:rgba(227,246,150,0.34)">
+        <div class="bucket-head"><span class="bucket-num">Bucket 1</span><h3>Outcomes</h3></div>
+        <p class="desc">The big transformation. What do people feel, achieve, or become at the end of it &mdash; not the sessions themselves, the result.</p>
+        <div id="bucketOutcomes"></div>
+      </div>
+
+      <div class="bucket" style="--bucket-color:var(--features); --bucket-wash:rgba(174,211,221,0.30)">
+        <div class="bucket-head"><span class="bucket-num">Bucket 2</span><h3>Loved features</h3></div>
+        <p class="desc">What people love about the service itself &mdash; the mode, the method, the moments in how you actually work together.</p>
+        <div id="bucketFeatures"></div>
+      </div>
+
+      <div class="bucket" style="--bucket-color:var(--hesitations); --bucket-wash:rgba(253,173,143,0.26)">
+        <div class="bucket-head"><span class="bucket-num">Bucket 3</span><h3>Hesitations</h3></div>
+        <p class="desc">What's holding people back &mdash; the beliefs and barriers in their head before they say yes. (Skip &ldquo;money&rdquo; &mdash; go one layer deeper.)</p>
+        <div id="bucketHesitations"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="buildBtn" type="button">Build my topic bank &#8594;</button>
+        <button class="btn btn-outline btn-small" id="exportRawBtn" type="button">Download my answers (PDF)</button>
+        <button class="btn btn-outline btn-small" id="clearBtn" type="button">Clear all</button>
+      </div>
+    </div>
+
+    <!-- ========== PANEL 2 ========== -->
+    <div id="panel2" class="hidden">
+      <div class="bank-head">
+        <h2 id="bankTitle">Your topic bank</h2>
+        <p>Starting pairings are a nudge, not a rule &mdash; the same idea can work in almost any structure. Change any of them, or shuffle for a fresh set.</p>
+        <div class="bank-head-actions">
+          <button class="btn btn-outline btn-small" id="backBtn" type="button">&#8592; Back to brainstorm</button>
+          <button class="btn btn-outline btn-small" id="shuffleBtn" type="button">&#128256; Shuffle</button>
+        </div>
+      </div>
+
+      <div class="cadence-note">Reminder from the episode: aim to share your service every 2&ndash;3 emails. The rest can just be good, honest content &mdash; that's still doing its job.</div>
+
+      <div class="filters" id="filters"></div>
+      <div class="toggle-row">
+        <label><input type="checkbox" id="hideUsedToggle"> Hide topics I've already used</label>
+      </div>
+      <div class="card-grid" id="cardGrid"></div>
+
+      <div class="actions">
+        <button class="btn" id="exportBankBtn" type="button">Download bank (PDF)</button>
+        <button class="btn btn-outline btn-small" id="copyBtn" type="button">Copy bank as text</button>
+      </div>
+      <p class="helper" id="copyMsg" style="text-align:right;"></p>
+      <p class="save-status" id="saveStatus"></p>
+    </div>
+
+    <footer>Nine ideas is a starting bank, not a ceiling &mdash; shuffle any time you need a new angle, or come back and run this again for a different service or client type.</footer>
+  </div>
+</section>
+
+<div class="site-footer">
+  <p>&copy; 2026 Whitney Bateson Digital Strategy &middot; <a href="https://whitneybateson.com">whitneybateson.com</a></p>
+</div>
+
+<script>
+/* ============================================================
+   BACKEND — Supabase Edge Function `topic-bank` (DFY Funnel project).
+   The Anthropic key lives server-side in the function; the anon key
+   below is safe to ship, it only permits calling the function.
+   ============================================================ */
+const SUPABASE_URL  = "https://rguqefwhlzehpzgljbdo.supabase.co";
+const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJndXFlZndobHplaHB6Z2xqYmRvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzYyMjYsImV4cCI6MjA4OTk1MjIyNn0.N8-BWjyTFMpdoTbKBik8jQdyA7YCPiq7nT_HdfxcMZ8";
+const FN_URL = SUPABASE_URL + "/functions/v1/topic-bank";
+
+/* ────────────────────────────────────────────────────────────
+   VERSION SWITCH — the only line that differs between the two builds.
+
+   "leadgen"  Public / webinar version. Consent copy shown, subscriber
+              synced to Kit, enters the nurture sequence.
+   "course"   Ads Made Simple students. Work still saves so they can
+              return, but NOTHING is sent to Kit and no marketing copy
+              appears on the gate.
+   ──────────────────────────────────────────────────────────── */
+const VERSION = "course";    // Ads Made Simple student build — no Kit sync
+
+let USER = { email:null, firstName:null };
+
+async function callBackend(payload){
+  const res = await fetch(FN_URL, {
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":"Bearer " + SUPABASE_ANON,
+      "apikey": SUPABASE_ANON
+    },
+    body: JSON.stringify(Object.assign({ source: VERSION }, payload))
+  });
+  const data = await res.json().catch(()=>({ error:"Unexpected response." }));
+  if(!res.ok) throw new Error(data.error || ("Request failed (" + res.status + ")"));
+  return data;
+}
+
+/* Debounced save — fires after edits settle rather than on every keystroke. */
+let saveTimer = null;
+function queueSave(){
+  if(!USER.email) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveNow, 1200);
+}
+async function saveNow(){
+  if(!USER.email) return;
+  const el = document.getElementById('saveStatus');
+  try{
+    await callBackend({
+      mode:"save",
+      email: USER.email,
+      first_name: USER.firstName,
+      form_data: collectRawAnswers(),
+      results: bankItems
+    });
+    if(el) el.textContent = "Saved";
+  }catch(e){
+    if(el) el.textContent = "Not saved — check your connection.";
+  }
+}
+
+/* ---------- Login gate ---------- */
+(function(){
+  const gate  = document.getElementById('gate');
+
+  /* Consent language only appears on the lead-gen build. Course students
+     are existing clients — showing them an opt-in notice would be both
+     confusing and inaccurate, since nothing is sent to Kit. */
+  const COPY = {
+    leadgen: {
+      intro: "Pop in your name and email to get started. Your work saves automatically, so you can close this and come back to it any time.",
+      fine:  "By entering your email you're opting in to marketing emails from Whitney Bateson Digital Strategy. You can unsubscribe at any time. Your email is also what lets you return to this page and find your topic bank waiting."
+    },
+    course: {
+      intro: "Pop in your name and email so your topic bank saves and you can pick it back up whenever you like.",
+      fine:  "Your email is only used to save your work and bring it back when you return. You won't be added to any mailing list."
+    }
+  };
+  const copy = COPY[VERSION] || COPY.leadgen;
+  document.getElementById('gateIntro').textContent = copy.intro;
+  document.getElementById('gateFine').textContent  = copy.fine;
+
+  const btn   = document.getElementById('gateBtn');
+  const errEl = document.getElementById('gateError');
+
+  async function submit(){
+    const name  = document.getElementById('gateName').value.trim();
+    const email = document.getElementById('gateEmail').value.trim();
+    errEl.textContent = '';
+
+    if(!name){ errEl.textContent = 'Please add your first name.'; return; }
+    if(!email.includes('@') || !email.includes('.')){
+      errEl.textContent = 'That email doesn\'t look right — mind checking it?';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'One moment…';
+    try{
+      const data = await callBackend({ mode:"load", email, first_name:name });
+      USER = { email:email.toLowerCase(), firstName:name };
+
+      // Returning visitor — put their work back on the page.
+      if(data.found && data.form_data){
+        const fd = data.form_data;
+        if(fd.service) document.getElementById('serviceInput').value = fd.service;
+        if(fd.buckets){
+          KEYS.forEach(k=>{
+            const vals = fd.buckets[k] || [];
+            document.querySelectorAll(`input[data-bucket="${k}"]`).forEach((inp,i)=>{
+              if(vals[i] && !vals[i].startsWith('(unfilled')) inp.value = vals[i];
+            });
+          });
+        }
+        if(Array.isArray(data.results) && data.results.length){
+          bankItems = data.results;
+          document.getElementById('bankTitle').textContent =
+            fd.service ? `Topic bank — ${fd.service}` : 'Your topic bank';
+          renderFilters();
+          renderBank();
+          showPanel(2);
+        }
+      }
+      gate.style.display = 'none';
+    }catch(e){
+      errEl.textContent = e.message || 'Something went wrong — try again.';
+      btn.disabled = false;
+      btn.textContent = 'Start \u2192';
+    }
+  }
+
+  btn.addEventListener('click', submit);
+  ['gateName','gateEmail'].forEach(id=>{
+    document.getElementById(id).addEventListener('keydown', e=>{
+      if(e.key === 'Enter') submit();
+    });
+  });
+})();
+
+/* ---------- Hero video ---------- */
+(function(){
+  const v = document.querySelector('.hero-video');
+  if(!v) return;
+  v.addEventListener('playing', ()=> v.classList.add('is-playing'), { once:true });
+})();
+
+/* ============================================================
+   CONFIG — buckets, structures, and the bucket→structure map.
+   ============================================================ */
+const BUCKETS = {
+  outcomes:    { label:'Outcome',       color:'var(--outcomes)',    placeholders:[
+      'Better relationship with their body',
+      'Confidence eating out with friends, flare-up free',
+      'Relief knowing how to support a loved one\'s diagnosis' ] },
+  features:    { label:'Loved feature', color:'var(--features)',    placeholders:[
+      'Messaging me between sessions with questions',
+      'Personalized 1:1 calls that feel safe and unhurried',
+      'Never feeling judged, ever' ] },
+  hesitations: { label:'Hesitation',    color:'var(--hesitations)', placeholders:[
+      'They\'ve tried so many things already',
+      'Not sure they have time for weekly sessions',
+      'Getting conflicting advice from their doctor' ] }
+};
+
+const STRUCTURES = {
+  myth:    {label:'Myth-busting',                    hint:'Name a misconception, then set the record straight.'},
+  topical: {label:'Topical / news tie-in',           hint:'Connect current research or news to your work.'},
+  case:    {label:'Case study / testimonial',        hint:'An anonymized client story or their own words — where they started, what changed.'},
+  tip:     {label:'Tip / how-to',                    hint:'One small, doable action they can try today.'},
+  story:   {label:'Personal story / lesson learned', hint:'How you learned this, a mistake you made, or something from daily life that taught you something relevant.'},
+  holding: {label:'What\'s holding you back',        hint:'Name the real hesitations you\'re hearing, and speak to each one honestly.'},
+  faq:     {label:'FAQ / people always ask me',      hint:'The question you get asked constantly — logistics or doubts — answered plainly.'},
+  picture: {label:'Painting the picture',            hint:'Where could they be a few months from now if they started? Contrast with staying exactly the same.'},
+  whynow:  {label:'Why now',                         hint:'What genuinely makes right now a good time to start — no manufactured urgency.'}
+};
+
+const SUGGEST = {
+  outcomes:    ['whynow','topical','case'],
+  features:    ['story','tip','picture'],
+  hesitations: ['myth','faq','holding']
+};
+
+const KEYS = ['outcomes','features','hesitations'];
+
+/* ---------- Panel 1 build ---------- */
+function renderBucket(containerId, bucketKey){
+  const el = document.getElementById(containerId);
+  const b = BUCKETS[bucketKey];
+  el.innerHTML = '';
+  for(let i=0;i<3;i++){
+    const row = document.createElement('div');
+    row.className = 'idea-row';
+    row.innerHTML = `<span class="idx">${i+1}</span><input type="text" data-bucket="${bucketKey}" data-i="${i}" placeholder="${b.placeholders[i]}">`;
+    el.appendChild(row);
+  }
+}
+renderBucket('bucketOutcomes','outcomes');
+renderBucket('bucketFeatures','features');
+renderBucket('bucketHesitations','hesitations');
+
+// Demo prefill removed — the login gate now loads each person's own saved work.
+
+document.getElementById('clearBtn').addEventListener('click', ()=>{
+  document.querySelectorAll('#panel1 input[type=text]').forEach(i=>i.value='');
+});
+
+/* ---------- Helpers ---------- */
+function shuffleArray(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function collectRawAnswers(){
+  const service = document.getElementById('serviceInput').value.trim();
+  const data = { service, buckets:{} };
+  KEYS.forEach(k=>{
+    data.buckets[k] = [];
+    document.querySelectorAll(`input[data-bucket="${k}"]`).forEach(inp=>{
+      data.buckets[k].push(inp.value.trim() || `(unfilled — placeholder shown: ${inp.placeholder})`);
+    });
+  });
+  return data;
+}
+
+let bankItems = [];
+let activeFilter = 'all';
+let hideUsed = false;
+
+/* ---------- Step switching ---------- */
+function showPanel(n){
+  document.getElementById('tab1').classList.toggle('active', n===1);
+  document.getElementById('tab2').classList.toggle('active', n===2);
+  document.getElementById('panel1').classList.toggle('hidden', n!==1);
+  document.getElementById('panel2').classList.toggle('hidden', n!==2);
+}
+document.getElementById('tab1').addEventListener('click', ()=>showPanel(1));
+document.getElementById('tab2').addEventListener('click', ()=>{ if(bankItems.length) showPanel(2); });
+document.getElementById('backBtn').addEventListener('click', ()=>showPanel(1));
+
+/* ---------- Build the bank ---------- */
+document.getElementById('buildBtn').addEventListener('click', ()=>{
+  const raw = collectRawAnswers();
+  const items = [];
+  KEYS.forEach(k=>{
+    // A permutation of the bucket's three structures — all three used, none twice.
+    const order = shuffleArray(SUGGEST[k]);
+    document.querySelectorAll(`input[data-bucket="${k}"]`).forEach((inp,i)=>{
+      items.push({ bucket:k, text: inp.value.trim() || inp.placeholder, structure:order[i], used:false, notes:null });
+    });
+  });
+  bankItems = items;
+  document.getElementById('bankTitle').textContent = raw.service ? `Topic bank — ${raw.service}` : 'Your topic bank';
+  showPanel(2);
+  renderFilters();
+  renderBank();
+  document.getElementById('tool').scrollIntoView({ behavior:'smooth', block:'start' });
+  queueSave();
+});
+
+document.getElementById('shuffleBtn').addEventListener('click', ()=>{
+  KEYS.forEach(k=>{
+    const order = shuffleArray(SUGGEST[k]);
+    let idx = 0;
+    bankItems.forEach(item=>{
+      if(item.bucket === k){ item.structure = order[idx]; item.notes = null; idx++; }
+    });
+  });
+  document.getElementById('copyMsg').textContent = '';
+  renderBank();
+  queueSave();
+});
+
+/* ---------- Filters ---------- */
+function renderFilters(){
+  const el = document.getElementById('filters');
+  el.innerHTML = '';
+  const mk = (key,label,active)=>{
+    const c = document.createElement('button');
+    c.type = 'button';
+    c.className = 'chip' + (active ? ' active' : '');
+    c.textContent = label;
+    c.dataset.key = key;
+    return c;
+  };
+  el.appendChild(mk('all','All structures',true));
+  Object.entries(STRUCTURES).forEach(([key,s])=> el.appendChild(mk(key,s.label,false)));
+  el.querySelectorAll('.chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      el.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      activeFilter = chip.dataset.key;
+      renderBank();
+    });
+  });
+}
+
+document.getElementById('hideUsedToggle').addEventListener('change', e=>{
+  hideUsed = e.target.checked;
+  renderBank();
+});
+
+/* ============================================================
+   AI approach notes.
+   NOTE FOR THE STANDALONE BUILD: this call works without an API
+   key only inside the Claude artifact sandbox, where Anthropic
+   authorizes it. On offers.whitneybateson.com it will fail.
+   Route it through a serverless proxy that holds the key
+   server-side — never put a key in this file.
+   ============================================================ */
+async function fetchApproachNotes(item, service, cardEl){
+  const notesBox = cardEl.querySelector('.approach-box');
+  notesBox.innerHTML = '<div class="approach-loading">Thinking through an angle&hellip;</div>';
+  const structure = STRUCTURES[item.structure];
+  try{
+    const data = await callBackend({
+      mode:"notes",
+      email: USER.email,
+      service: service,
+      topic: item.text,
+      bucketLabel: BUCKETS[item.bucket].label,
+      structureLabel: structure.label,
+      structureHint: structure.hint
+    });
+    item.notes = data.notes;
+    renderNotesInto(notesBox, data.notes);
+    queueSave();
+  }catch(err){
+    notesBox.innerHTML = '<div class="approach-loading">' +
+      (err.message || "Couldn't generate notes right now — try again.") + '</div>';
+  }
+}
+
+function renderNotesInto(box, text){
+  const lines = text.split('\n').map(l=>l.replace(/^[-•\d\.\)]+\s*/,'').trim()).filter(Boolean);
+  const ul = document.createElement('ul');
+  lines.forEach(l=>{
+    const li = document.createElement('li');
+    li.textContent = l;
+    ul.appendChild(li);
+  });
+  box.innerHTML = '';
+  box.appendChild(ul);
+}
+
+/* ---------- Render the bank ---------- */
+function renderBank(){
+  const grid = document.getElementById('cardGrid');
+  grid.innerHTML = '';
+  const service = document.getElementById('serviceInput').value.trim();
+  bankItems.forEach((item, idx)=>{
+    if(activeFilter !== 'all' && item.structure !== activeFilter) return;
+    if(hideUsed && item.used) return;
+
+    const card = document.createElement('div');
+    card.className = 'card' + (item.used ? ' used' : '');
+    card.style.setProperty('--bucket-color', BUCKETS[item.bucket].color);
+
+    let options = '';
+    Object.entries(STRUCTURES).forEach(([key,s])=>{
+      options += `<option value="${key}" ${key===item.structure?'selected':''}>${s.label}</option>`;
+    });
+
+    card.innerHTML = `
+      <span class="tag">${BUCKETS[item.bucket].label}</span>
+      <div class="topic"></div>
+      <select class="structure-select" data-idx="${idx}" aria-label="Email structure">${options}</select>
+      <p class="structure-hint">${STRUCTURES[item.structure].hint}</p>
+      <div class="card-actions">
+        <button class="btn btn-outline btn-small approach-btn" data-idx="${idx}" type="button">&#10024; Get approach notes</button>
+        <label class="used-toggle"><input type="checkbox" class="used-checkbox" data-idx="${idx}" ${item.used?'checked':''}> Used</label>
+      </div>
+      <div class="approach-box"></div>
+    `;
+    card.querySelector('.topic').textContent = item.text;
+    if(item.notes) renderNotesInto(card.querySelector('.approach-box'), item.notes);
+    grid.appendChild(card);
+  });
+
+  grid.querySelectorAll('.structure-select').forEach(sel=>{
+    sel.addEventListener('change', e=>{
+      bankItems[e.target.dataset.idx].structure = e.target.value;
+      bankItems[e.target.dataset.idx].notes = null;
+      renderBank();
+      queueSave();
+    });
+  });
+  grid.querySelectorAll('.used-checkbox').forEach(cb=>{
+    cb.addEventListener('change', e=>{
+      bankItems[e.target.dataset.idx].used = e.target.checked;
+      renderBank();
+      queueSave();
+    });
+  });
+  grid.querySelectorAll('.approach-btn').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      const idx = e.target.dataset.idx;
+      fetchApproachNotes(bankItems[idx], service, e.target.closest('.card'));
+    });
+  });
+}
+
+/* ---------- Copy ---------- */
+document.getElementById('copyBtn').addEventListener('click', async ()=>{
+  const text = bankItems.map(item =>
+    `[${STRUCTURES[item.structure].label}] ${item.text}${item.notes ? '\n  Notes: ' + item.notes.replace(/\n/g,' / ') : ''}`
+  ).join('\n\n');
+  const msg = document.getElementById('copyMsg');
+  try{
+    await navigator.clipboard.writeText(text);
+    msg.textContent = 'Copied to clipboard.';
+  }catch(e){
+    msg.textContent = 'Could not copy automatically — use the PDF download instead.';
+  }
+});
+
+/* ---------- PDF export ---------- */
+function addWrapped(doc, text, x, y, maxWidth, lineHeight, pageHeight){
+  doc.splitTextToSize(text, maxWidth).forEach(line=>{
+    if(y > pageHeight - 20){ doc.addPage(); y = 20; }
+    doc.text(line, x, y);
+    y += lineHeight;
+  });
+  return y;
+}
+
+document.getElementById('exportRawBtn').addEventListener('click', ()=>{
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const pageHeight = doc.internal.pageSize.height;
+  const raw = collectRawAnswers();
+  let y = 22;
+  doc.setFont('helvetica','bold'); doc.setFontSize(16);
+  doc.text('Email Topic Brainstorm', 20, y); y += 8;
+  doc.setFont('helvetica','normal'); doc.setFontSize(11);
+  if(raw.service) y = addWrapped(doc, 'Service: ' + raw.service, 20, y, 170, 6, pageHeight);
+  y += 4;
+  const titles = { outcomes:'Bucket 1 — Outcomes', features:'Bucket 2 — Loved features', hesitations:'Bucket 3 — Hesitations' };
+  KEYS.forEach(k=>{
+    y += 4;
+    if(y > pageHeight - 30){ doc.addPage(); y = 20; }
+    doc.setFont('helvetica','bold'); doc.setFontSize(12);
+    doc.text(titles[k], 20, y); y += 7;
+    doc.setFont('helvetica','normal'); doc.setFontSize(11);
+    raw.buckets[k].forEach((v,i)=>{ y = addWrapped(doc, (i+1)+'. '+v, 24, y, 166, 6, pageHeight); });
+  });
+  doc.save('email-topic-brainstorm.pdf');
+});
+
+document.getElementById('exportBankBtn').addEventListener('click', ()=>{
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const pageHeight = doc.internal.pageSize.height;
+  const service = document.getElementById('serviceInput').value.trim();
+  let y = 22;
+  doc.setFont('helvetica','bold'); doc.setFontSize(16);
+  y = addWrapped(doc, 'Email Topic Bank' + (service ? ' — ' + service : ''), 20, y, 170, 8, pageHeight);
+  y += 4;
+  bankItems.forEach((item,i)=>{
+    if(y > pageHeight - 35){ doc.addPage(); y = 20; }
+    doc.setFont('helvetica','bold'); doc.setFontSize(11);
+    y = addWrapped(doc, `${i+1}. [${STRUCTURES[item.structure].label}] (${BUCKETS[item.bucket].label})`, 20, y, 170, 6, pageHeight);
+    doc.setFont('helvetica','normal'); doc.setFontSize(11);
+    y = addWrapped(doc, item.text, 24, y, 166, 6, pageHeight);
+    if(item.notes){
+      doc.setFont('helvetica','italic'); doc.setFontSize(10);
+      y = addWrapped(doc, 'Approach notes: ' + item.notes.replace(/\n/g,' / '), 24, y, 166, 5.5, pageHeight);
+    }
+    y += 4;
+  });
+  doc.save('email-topic-bank.pdf');
+});
+</script>
+</body>
+</html>
