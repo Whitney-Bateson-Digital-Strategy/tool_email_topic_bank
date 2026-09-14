@@ -18,7 +18,8 @@ are new or rewritten.*
 ## 1. What this is
 
 An interactive tool implementing Whitney's two-step sales email framework
-(from the *2-Step Framework for Sales Emails* podcast episode):
+(from The Growth Show Ep 134, *The Two-Step Framework to Write Sales Emails
+That Feel Genuine*):
 
 1. **Brainstorm** — pick one service, generate 9 ideas across 3 buckets (3 each):
    - **Outcomes** — the transformation/result a client experiences
@@ -237,12 +238,10 @@ logs.
   creating it.
 
 ## 8. Still open
-- **Conversion path — partly built.** The nav CTA now points at
+- **Conversion path — partly built.** The nav CTA points at
   `offers.whitneybateson.com/dfy-funnel/` ("Help me build my list"), and the
-  How-to-use section carries a Growth Show callout. **The episode number,
-  title, and listen URL in that callout are still placeholders** — see the
-  `TODO` comment above `.callout` in the HTML. Nothing yet links to Whitney's
-  1:1 services or WPWS after the download buttons.
+  How-to-use section carries a Growth Show callout linking to Ep 134. Nothing
+  yet links to Whitney's 1:1 services or WPWS after the download buttons.
 - **Nav logo — done.** `logo.png` (the two-line teal script wordmark,
   1545x863 transparent PNG) sits next to the HTML and renders at 70px tall,
   44px on mobile. It needs that much height because it's a stacked two-line
