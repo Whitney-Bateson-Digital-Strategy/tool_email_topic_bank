@@ -1,9 +1,17 @@
-# Email Topic Bank — Design & Build Handoff
+# Endless Email Generator — Design & Build Handoff
 
 *Updated after the brand pass and backend build. Supersedes the earlier
 version, which described the tool as a Claude-artifact prototype with no
 backend. Sections 1–4 are unchanged reasoning and still hold; sections 5–8
 are new or rewritten.*
+
+> **Renamed 2026-09-14.** The tool is now **Endless Email Generator** (was
+> "Email Topic Bank") everywhere it's user-facing: page title, hero, PDF
+> export, and in-tool labels. File names, the Supabase table
+> (`topic_bank_sessions`), and the Edge Function (`topic-bank`) keep the old
+> name deliberately — renaming them breaks live data and deployed URLs for
+> no user-visible gain. The framework eyebrow is now "The Emails That Sell
+> Framework".
 
 ---
 
@@ -229,10 +237,17 @@ logs.
   creating it.
 
 ## 8. Still open
-- **No conversion path on the page.** Nothing links to Whitney's services, the
-  source podcast episode, or WPWS. Someone finishes, downloads a PDF, and the
-  page has nowhere to send them. Natural spots: near the cadence reminder, and
-  after the download buttons.
+- **Conversion path — partly built.** The nav CTA now points at
+  `offers.whitneybateson.com/dfy-funnel/` ("Help me build my list"), and the
+  How-to-use section carries a Growth Show callout. **The episode number,
+  title, and listen URL in that callout are still placeholders** — see the
+  `TODO` comment above `.callout` in the HTML. Nothing yet links to Whitney's
+  1:1 services or WPWS after the download buttons.
+- **Nav logo is a file drop.** The nav expects `logo.png` next to the HTML.
+  If it's missing the "Whitney Bateson" wordmark renders instead, so the page
+  never breaks — but the real logo has to be uploaded alongside the hero
+  assets. Roughly 2x the 42px render height (so ~84px tall), transparent PNG
+  or SVG (change the `src` extension if SVG).
 - **PDF exports don't include notes generated in a previous session** — they do
   now that notes persist, but this is worth re-testing end to end.
 - **Unrelated security issue in the same project:** `clients` and
@@ -244,7 +259,10 @@ logs.
 
 ## 9. Files
 
-- `email-topic-bank.html` — the tool. Single file, video currently inlined.
+- `index.html` — the **course** build (`VERSION = "course"`, no Kit sync).
+- `email-topic-bank.html` — the **leadgen** build (`VERSION = "leadgen"`).
+  The two files are byte-identical apart from that one line; regenerate one
+  from the other rather than hand-editing both.
 - `hero-loop.mp4` / `hero-loop.webm` / `hero-poster.jpg` — hero assets for the
   production swap described in section 5.
 - This document.

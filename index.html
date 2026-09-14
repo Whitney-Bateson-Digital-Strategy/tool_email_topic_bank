@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Email Topic Bank | Whitney Bateson</title>
+<title>Endless Email Generator | Whitney Bateson</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -51,18 +51,26 @@ h1, h2, h3 { font-family:'Playfair Display', serif; font-weight:400; line-height
   border-bottom:1px solid rgba(0,0,0,0.07);
 }
 .nav-logo {
+  display:inline-flex; align-items:center; text-decoration:none;
   font-family:'Playfair Display', serif; font-style:italic;
-  font-size:20px; color:var(--teal); text-decoration:none; letter-spacing:0.02em;
+  font-size:20px; color:var(--teal); letter-spacing:0.02em;
 }
+/* Swap logo.png for the real file. If it's missing or fails to load the
+   wordmark below takes its place, so the nav never renders empty. */
+.nav-logo-img { height:42px; width:auto; display:block; }
+
+/* Secondary CTA: deliberately quieter than the coral tool buttons so it
+   doesn't compete with "Get Started" further down the page. */
 .nav-cta {
-  background:var(--coral); color:var(--white); border:none;
-  padding:11px 24px; border-radius:50px;
-  font-family:'Nunito Sans', sans-serif; font-size:15px; font-weight:600;
+  background:var(--white); color:var(--coral); border:2px solid var(--pink);
+  padding:8px 20px; border-radius:50px;
+  font-family:'Nunito Sans', sans-serif; font-size:13px; font-weight:700;
   text-transform:uppercase; letter-spacing:0.06em;
   text-decoration:none; display:inline-block;
-  transition:transform .15s, box-shadow .15s;
+  transition:background .15s, border-color .15s, color .15s;
 }
-.nav-cta:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(255,127,80,0.35); }
+.nav-cta:hover { background:var(--pink); border-color:var(--pink); color:var(--teal); }
+.nav-cta:focus-visible { outline:2px solid var(--teal); outline-offset:3px; }
 
 /* ─── HERO ─── */
 .hero {
@@ -98,8 +106,9 @@ h1, h2, h3 { font-family:'Playfair Display', serif; font-weight:400; line-height
 .hero h1 { font-size:clamp(44px, 6vw, 72px); color:var(--white); margin-bottom:24px; }
 .hero-sub {
   font-size:21px; color:rgba(255,255,255,0.9); line-height:1.6;
-  max-width:660px; margin:0 auto 38px;
+  max-width:660px; margin:0 auto 18px;
 }
+.hero-sub:last-of-type { margin-bottom:38px; }
 
 
 /* ─── LOGIN GATE ─── */
@@ -136,6 +145,18 @@ h1, h2, h3 { font-family:'Playfair Display', serif; font-weight:400; line-height
   padding:80px 32px 100px;
 }
 .wrap { max-width:860px; margin:0 auto; }
+
+/* ─── HOW TO USE ─── */
+.howto { margin:0 0 52px; }
+.howto h2 { font-size:clamp(28px,3.2vw,36px); color:var(--teal); margin-bottom:16px; }
+.howto p { font-size:17px; line-height:1.65; max-width:68ch; margin-bottom:14px; }
+.howto p:last-of-type { margin-bottom:0; }
+.callout {
+  background:var(--white); border-radius:16px; padding:20px 26px;
+  border-left:5px solid var(--coral);
+  font-size:17px; line-height:1.6; max-width:68ch; margin-top:26px;
+}
+.callout a { color:var(--coral); font-weight:700; }
 
 /* ─── STEP TABS ─── */
 .steps { display:flex; gap:12px; justify-content:center; margin:0 0 52px; padding:0; background:none; border:none; }
@@ -271,12 +292,6 @@ input[type=text]:focus, select:focus { outline:none; border-color:var(--coral); 
 
 .hidden { display:none; }
 
-footer {
-  margin-top:48px; text-align:center;
-  font-size:17px; color:var(--muted); font-style:italic;
-  max-width:62ch; margin-left:auto; margin-right:auto;
-}
-
 .site-footer {
   background:var(--text); color:rgba(255,255,255,0.5);
   text-align:center; padding:28px 48px; font-size:14px;
@@ -288,7 +303,10 @@ footer {
 }
 @media (max-width:768px) {
   html { font-size:18px; }
-  .site-nav { padding:14px 22px; }
+  .site-nav { padding:14px 20px; gap:14px; }
+  .nav-logo { font-size:17px; white-space:nowrap; }
+  .nav-logo-img { height:34px; }
+  .nav-cta { font-size:11px; padding:7px 15px; white-space:nowrap; }
   .hero { min-height:auto; }
   .hero-media::after { background:linear-gradient(to bottom, rgba(2,82,93,0.55) 0%, rgba(2,82,93,0.88) 60%, rgba(2,82,93,0.95) 100%); }
   .hero-copy { padding:64px 24px 72px; }
@@ -305,7 +323,7 @@ footer {
 <!-- ─── LOGIN GATE ─── -->
 <div class="gate-backdrop" id="gate">
   <div class="gate-card">
-    <h2>Let's get your topic bank started</h2>
+    <h2>Let's get your email topics started</h2>
     <p id="gateIntro"></p>
     <div class="gate-field">
       <label for="gateName">First name</label>
@@ -323,8 +341,13 @@ footer {
 
 <!-- ─── NAV ─── -->
 <nav class="site-nav">
-  <a class="nav-logo" href="https://whitneybateson.com">Whitney Bateson</a>
-  <a class="nav-cta" href="#tool">Get Started &#8594;</a>
+  <a class="nav-logo" href="https://whitneybateson.com">
+    <img class="nav-logo-img" src="logo.png" alt="Whitney Bateson Digital Strategy"
+         onerror="this.remove();document.getElementById('navLogoText').hidden=false;">
+    <span id="navLogoText" hidden>Whitney Bateson</span>
+  </a>
+  <a class="nav-cta" href="https://offers.whitneybateson.com/dfy-funnel/"
+     target="_blank" rel="noopener">Help me build my list</a>
 </nav>
 
 <!-- ─── HERO ─── -->
@@ -339,9 +362,10 @@ footer {
   </div>
 
   <div class="hero-copy">
-    <div class="hero-label">The Two-Step Sales Email Framework</div>
-    <h1>Email Topic Bank</h1>
-    <p class="hero-sub">A place to generate what to write about &mdash; never what to say. Fill the drawer, match it to a structure, and build a bank of email topics you can come back to any time.</p>
+    <div class="hero-label">The Emails That Sell Framework</div>
+    <h1>Endless Email Generator</h1>
+    <p class="hero-sub">Emailing your list regularly, with the right message, is what turns interest into paying clients.</p>
+    <p class="hero-sub">This tool gives you an endless supply of topics - pulled straight from your own services - so every email can move someone a little closer to working with you, without ever feeling salesy or forced.</p>
     <a href="#tool" class="btn">Get Started &#8594;</a>
   </div>
 </section>
@@ -350,9 +374,19 @@ footer {
 <section class="tool" id="tool">
   <div class="wrap">
 
+    <section class="howto">
+      <h2>How to Use This Tool</h2>
+      <p>Start with Step 1 to pick one service you want to focus on and promote to your email list, then fill in nine quick answers based on that service - three outcomes, three loved features, three hesitations. From there, each idea gets matched to an email structure in Step 2, and now you've got a real bank of email topics to pull from any time you're staring at a blank page wondering what to send next. I even give you some tips on how to approach each email topic as you write it.</p>
+      <p>Use the download buttons to save the ideas, then when you're ready to focus on another service or want to generate more ideas, just hit the &ldquo;clear all&rdquo; button to start over again.</p>
+      <!-- TODO: swap in the real episode number, title, and listen URL. -->
+      <div class="callout">
+        Want to hear me talk through this whole framework? Check out Episode [##: Full Title] of The Growth Show &#8594; <a href="#">listen here</a>
+      </div>
+    </section>
+
     <nav class="steps">
-      <button class="step active" id="tab1" type="button">Step 1 &mdash; Brainstorm</button>
-      <button class="step" id="tab2" type="button">Step 2 &mdash; Match &amp; Bank</button>
+      <button class="step active" id="tab1" type="button">Step 1 - Brainstorm</button>
+      <button class="step" id="tab2" type="button">Step 2 - Match &amp; Bank</button>
     </nav>
 
     <!-- ========== PANEL 1 ========== -->
@@ -360,29 +394,29 @@ footer {
       <div class="service-row">
         <label class="field" for="serviceInput">The one service you're focusing on</label>
         <input type="text" id="serviceInput" style="font-size:20px;padding:18px 20px;" placeholder="e.g. my 1:1 gut health coaching program">
-        <p class="helper">Pick one service, program, or package. If you help a wide range of people, just think of one type of client while you fill this in &mdash; you can always come back and run this again for another.</p>
+        <p class="helper">Pick one service, program, or package. If you help a wide range of people, just think of one type of client while you fill this in - you can always come back and run this again for another.</p>
       </div>
 
       <div class="bucket" style="--bucket-color:var(--outcomes); --bucket-wash:rgba(227,246,150,0.34)">
         <div class="bucket-head"><span class="bucket-num">Bucket 1</span><h3>Outcomes</h3></div>
-        <p class="desc">The big transformation. What do people feel, achieve, or become at the end of it &mdash; not the sessions themselves, the result.</p>
+        <p class="desc">The transformations people experience as a result of this service. What do people feel, achieve, or become at the end of it - not what happens inside the sessions themselves, the end result.</p>
         <div id="bucketOutcomes"></div>
       </div>
 
       <div class="bucket" style="--bucket-color:var(--features); --bucket-wash:rgba(174,211,221,0.30)">
         <div class="bucket-head"><span class="bucket-num">Bucket 2</span><h3>Loved features</h3></div>
-        <p class="desc">What people love about the service itself &mdash; the mode, the method, the moments in how you actually work together.</p>
+        <p class="desc">What people love about this service - the mode, the method, the experience of how you actually work together. This can be about you as a coach or counselor, as well as the structure of the service or program itself.</p>
         <div id="bucketFeatures"></div>
       </div>
 
       <div class="bucket" style="--bucket-color:var(--hesitations); --bucket-wash:rgba(253,173,143,0.26)">
         <div class="bucket-head"><span class="bucket-num">Bucket 3</span><h3>Hesitations</h3></div>
-        <p class="desc">What's holding people back &mdash; the beliefs and barriers in their head before they say yes. (Skip &ldquo;money&rdquo; &mdash; go one layer deeper.)</p>
+        <p class="desc">What's holding people back from working with a professional or joining a program like yours - the beliefs, barriers, anxieties, and points of confusion in their head before they say yes. (Skip &ldquo;lack of money&rdquo; - go one layer deeper.)</p>
         <div id="bucketHesitations"></div>
       </div>
 
       <div class="actions">
-        <button class="btn" id="buildBtn" type="button">Build my topic bank &#8594;</button>
+        <button class="btn" id="buildBtn" type="button">Build my email topics &#8594;</button>
         <button class="btn btn-outline btn-small" id="exportRawBtn" type="button">Download my answers (PDF)</button>
         <button class="btn btn-outline btn-small" id="clearBtn" type="button">Clear all</button>
       </div>
@@ -391,15 +425,15 @@ footer {
     <!-- ========== PANEL 2 ========== -->
     <div id="panel2" class="hidden">
       <div class="bank-head">
-        <h2 id="bankTitle">Your topic bank</h2>
-        <p>Starting pairings are a nudge, not a rule &mdash; the same idea can work in almost any structure. Change any of them, or shuffle for a fresh set.</p>
+        <h2 id="bankTitle">Your email topics</h2>
+        <p>Starting pairings are a nudge, not a rule - the same idea can work in almost any structure. Change any of them, or shuffle for a fresh set.</p>
         <div class="bank-head-actions">
           <button class="btn btn-outline btn-small" id="backBtn" type="button">&#8592; Back to brainstorm</button>
           <button class="btn btn-outline btn-small" id="shuffleBtn" type="button">&#128256; Shuffle</button>
         </div>
       </div>
 
-      <div class="cadence-note">Reminder from the episode: aim to share your service every 2&ndash;3 emails. The rest can just be good, honest content &mdash; that's still doing its job.</div>
+      <div class="cadence-note">Reminder from the episode: aim to share your service every 2-3 emails. The rest can just be good, honest content - that's still doing its job.</div>
 
       <div class="filters" id="filters"></div>
       <div class="toggle-row">
@@ -408,14 +442,13 @@ footer {
       <div class="card-grid" id="cardGrid"></div>
 
       <div class="actions">
-        <button class="btn" id="exportBankBtn" type="button">Download bank (PDF)</button>
-        <button class="btn btn-outline btn-small" id="copyBtn" type="button">Copy bank as text</button>
+        <button class="btn" id="exportBankBtn" type="button">Download my topics (PDF)</button>
+        <button class="btn btn-outline btn-small" id="copyBtn" type="button">Copy topics as text</button>
+        <button class="btn btn-outline btn-small" id="clearBtn2" type="button">Clear all</button>
       </div>
       <p class="helper" id="copyMsg" style="text-align:right;"></p>
       <p class="save-status" id="saveStatus"></p>
     </div>
-
-    <footer>Nine ideas is a starting bank, not a ceiling &mdash; shuffle any time you need a new angle, or come back and run this again for a different service or client type.</footer>
   </div>
 </section>
 
@@ -481,7 +514,7 @@ async function saveNow(){
     });
     if(el) el.textContent = "Saved";
   }catch(e){
-    if(el) el.textContent = "Not saved — check your connection.";
+    if(el) el.textContent = "Not saved - check your connection.";
   }
 }
 
@@ -495,10 +528,10 @@ async function saveNow(){
   const COPY = {
     leadgen: {
       intro: "Pop in your name and email to get started. Your work saves automatically, so you can close this and come back to it any time.",
-      fine:  "By entering your email you're opting in to marketing emails from Whitney Bateson Digital Strategy. You can unsubscribe at any time. Your email is also what lets you return to this page and find your topic bank waiting."
+      fine:  "Entering your email adds you to the Whitney Bateson Digital Strategy email list. You can unsubscribe at any time, and unsubscribing won't affect your access to this tool. Your email is also what lets you return to this page and find your email topics waiting."
     },
     course: {
-      intro: "Pop in your name and email so your topic bank saves and you can pick it back up whenever you like.",
+      intro: "Pop in your name and email so your email topics save and you can pick them back up whenever you like.",
       fine:  "Your email is only used to save your work and bring it back when you return. You won't be added to any mailing list."
     }
   };
@@ -516,7 +549,7 @@ async function saveNow(){
 
     if(!name){ errEl.textContent = 'Please add your first name.'; return; }
     if(!email.includes('@') || !email.includes('.')){
-      errEl.textContent = 'That email doesn\'t look right — mind checking it?';
+      errEl.textContent = 'That email doesn\'t look right - mind checking it?';
       return;
     }
 
@@ -541,7 +574,7 @@ async function saveNow(){
         if(Array.isArray(data.results) && data.results.length){
           bankItems = data.results;
           document.getElementById('bankTitle').textContent =
-            fd.service ? `Topic bank — ${fd.service}` : 'Your topic bank';
+            fd.service ? `Email topics - ${fd.service}` : 'Your email topics';
           renderFilters();
           renderBank();
           showPanel(2);
@@ -549,7 +582,7 @@ async function saveNow(){
       }
       gate.style.display = 'none';
     }catch(e){
-      errEl.textContent = e.message || 'Something went wrong — try again.';
+      errEl.textContent = e.message || 'Something went wrong - try again.';
       btn.disabled = false;
       btn.textContent = 'Start \u2192';
     }
@@ -591,13 +624,13 @@ const BUCKETS = {
 const STRUCTURES = {
   myth:    {label:'Myth-busting',                    hint:'Name a misconception, then set the record straight.'},
   topical: {label:'Topical / news tie-in',           hint:'Connect current research or news to your work.'},
-  case:    {label:'Case study / testimonial',        hint:'An anonymized client story or their own words — where they started, what changed.'},
+  case:    {label:'Case study / testimonial',        hint:'An anonymized client story or their own words - where they started, what changed.'},
   tip:     {label:'Tip / how-to',                    hint:'One small, doable action they can try today.'},
   story:   {label:'Personal story / lesson learned', hint:'How you learned this, a mistake you made, or something from daily life that taught you something relevant.'},
   holding: {label:'What\'s holding you back',        hint:'Name the real hesitations you\'re hearing, and speak to each one honestly.'},
-  faq:     {label:'FAQ / people always ask me',      hint:'The question you get asked constantly — logistics or doubts — answered plainly.'},
+  faq:     {label:'FAQ / people always ask me',      hint:'The question you get asked constantly - logistics or doubts - answered plainly.'},
   picture: {label:'Painting the picture',            hint:'Where could they be a few months from now if they started? Contrast with staying exactly the same.'},
-  whynow:  {label:'Why now',                         hint:'What genuinely makes right now a good time to start — no manufactured urgency.'}
+  whynow:  {label:'Why now',                         hint:'What genuinely makes right now a good time to start - no manufactured urgency.'}
 };
 
 const SUGGEST = {
@@ -626,9 +659,26 @@ renderBucket('bucketHesitations','hesitations');
 
 // Demo prefill removed — the login gate now loads each person's own saved work.
 
-document.getElementById('clearBtn').addEventListener('click', ()=>{
+/* The how-to copy tells people "clear all" starts them over, so it has to
+   wipe the built bank too - not just the brainstorm inputs. It's offered on
+   both panels because the copy points to it right after the downloads. */
+function clearAll(){
+  if(bankItems.length && !confirm('This clears your answers and your saved email topics so you can start fresh. Continue?')) return;
   document.querySelectorAll('#panel1 input[type=text]').forEach(i=>i.value='');
-});
+  document.getElementById('serviceInput').value = '';
+  bankItems = [];
+  activeFilter = 'all';
+  hideUsed = false;
+  document.getElementById('hideUsedToggle').checked = false;
+  document.getElementById('copyMsg').textContent = '';
+  document.getElementById('bankTitle').textContent = 'Your email topics';
+  document.getElementById('cardGrid').innerHTML = '';
+  document.getElementById('filters').innerHTML = '';
+  showPanel(1);
+  queueSave();
+}
+document.getElementById('clearBtn').addEventListener('click', clearAll);
+document.getElementById('clearBtn2').addEventListener('click', clearAll);
 
 /* ---------- Helpers ---------- */
 function shuffleArray(arr){
@@ -646,7 +696,7 @@ function collectRawAnswers(){
   KEYS.forEach(k=>{
     data.buckets[k] = [];
     document.querySelectorAll(`input[data-bucket="${k}"]`).forEach(inp=>{
-      data.buckets[k].push(inp.value.trim() || `(unfilled — placeholder shown: ${inp.placeholder})`);
+      data.buckets[k].push(inp.value.trim() || `(unfilled - placeholder shown: ${inp.placeholder})`);
     });
   });
   return data;
@@ -679,7 +729,7 @@ document.getElementById('buildBtn').addEventListener('click', ()=>{
     });
   });
   bankItems = items;
-  document.getElementById('bankTitle').textContent = raw.service ? `Topic bank — ${raw.service}` : 'Your topic bank';
+  document.getElementById('bankTitle').textContent = raw.service ? `Email topics - ${raw.service}` : 'Your email topics';
   showPanel(2);
   renderFilters();
   renderBank();
@@ -756,7 +806,7 @@ async function fetchApproachNotes(item, service, cardEl){
     queueSave();
   }catch(err){
     notesBox.innerHTML = '<div class="approach-loading">' +
-      (err.message || "Couldn't generate notes right now — try again.") + '</div>';
+      (err.message || "Couldn't generate notes right now - try again.") + '</div>';
   }
 }
 
@@ -839,7 +889,7 @@ document.getElementById('copyBtn').addEventListener('click', async ()=>{
     await navigator.clipboard.writeText(text);
     msg.textContent = 'Copied to clipboard.';
   }catch(e){
-    msg.textContent = 'Could not copy automatically — use the PDF download instead.';
+    msg.textContent = 'Could not copy automatically - use the PDF download instead.';
   }
 });
 
@@ -864,7 +914,7 @@ document.getElementById('exportRawBtn').addEventListener('click', ()=>{
   doc.setFont('helvetica','normal'); doc.setFontSize(11);
   if(raw.service) y = addWrapped(doc, 'Service: ' + raw.service, 20, y, 170, 6, pageHeight);
   y += 4;
-  const titles = { outcomes:'Bucket 1 — Outcomes', features:'Bucket 2 — Loved features', hesitations:'Bucket 3 — Hesitations' };
+  const titles = { outcomes:'Bucket 1 - Outcomes', features:'Bucket 2 - Loved features', hesitations:'Bucket 3 - Hesitations' };
   KEYS.forEach(k=>{
     y += 4;
     if(y > pageHeight - 30){ doc.addPage(); y = 20; }
@@ -883,7 +933,7 @@ document.getElementById('exportBankBtn').addEventListener('click', ()=>{
   const service = document.getElementById('serviceInput').value.trim();
   let y = 22;
   doc.setFont('helvetica','bold'); doc.setFontSize(16);
-  y = addWrapped(doc, 'Email Topic Bank' + (service ? ' — ' + service : ''), 20, y, 170, 8, pageHeight);
+  y = addWrapped(doc, 'Endless Email Generator' + (service ? ' - ' + service : ''), 20, y, 170, 8, pageHeight);
   y += 4;
   bankItems.forEach((item,i)=>{
     if(y > pageHeight - 35){ doc.addPage(); y = 20; }
@@ -897,7 +947,7 @@ document.getElementById('exportBankBtn').addEventListener('click', ()=>{
     }
     y += 4;
   });
-  doc.save('email-topic-bank.pdf');
+  doc.save('endless-email-generator.pdf');
 });
 </script>
 </body>
