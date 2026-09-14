@@ -259,10 +259,22 @@ logs.
 
 ## 9. Files
 
-- `index.html` — the **course** build (`VERSION = "course"`, no Kit sync).
-- `email-topic-bank.html` — the **leadgen** build (`VERSION = "leadgen"`).
-  The two files are byte-identical apart from that one line; regenerate one
-  from the other rather than hand-editing both.
+- `index.html` — the **public** build (`VERSION = "leadgen"`): opt-in copy
+  shown on the gate, subscriber synced to Kit.
+- `course.html` — the **Ads Made Simple student** build
+  (`VERSION = "course"`): work still saves, nothing goes to Kit, no opt-in
+  notice.
+
+> **Renamed 2026-09-14.** These two swapped roles. `index.html` used to be
+> the course build (it had been renamed from `email-topic-bank-COURSE.html`)
+> and `email-topic-bank.html` was the public one. Since everything public
+> facing lives at the default file name, `index.html` is now the public build
+> and the student build moved to the self-describing `course.html`.
+> **`email-topic-bank.html` no longer exists** — any link pointing at it
+> needs updating.
+
+The two files are byte-identical apart from that one `VERSION` line;
+regenerate one from the other rather than hand-editing both.
 - `hero-loop.mp4` / `hero-loop.webm` / `hero-poster.jpg` — hero assets for the
   production swap described in section 5.
 - This document.
