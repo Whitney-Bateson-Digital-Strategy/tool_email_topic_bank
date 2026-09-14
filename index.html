@@ -229,6 +229,7 @@ input[type=text]:focus, select:focus { outline:none; border-color:var(--coral); 
 .bank-head { margin-bottom:24px; }
 .bank-head h2 { font-size:clamp(30px,3.4vw,38px); color:var(--teal); margin-bottom:10px; }
 .bank-head p { font-size:17px; color:var(--muted); max-width:62ch; }
+.bank-head p + p { margin-top:12px; }
 .bank-head-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:20px; }
 
 .cadence-note {
@@ -426,14 +427,16 @@ input[type=text]:focus, select:focus { outline:none; border-color:var(--coral); 
     <div id="panel2" class="hidden">
       <div class="bank-head">
         <h2 id="bankTitle">Your email topics</h2>
-        <p>Starting pairings are a nudge, not a rule - the same idea can work in almost any structure. Change any of them, or shuffle for a fresh set.</p>
+        <p>I've taken your ideas and matched them to email structures that work well for building authentic connection while sharing aspects of your services.</p>
+        <p>These starting pairings are a suggestion, not a rule - the same idea can work in almost any structure. Change them individually, or shuffle for a fresh set.</p>
+        <p>Click the &ldquo;Get approach notes&rdquo; button to get my advice on how to begin writing the email - how to open it, what to focus on, and how to naturally bridge to your service or offer.</p>
         <div class="bank-head-actions">
           <button class="btn btn-outline btn-small" id="backBtn" type="button">&#8592; Back to brainstorm</button>
           <button class="btn btn-outline btn-small" id="shuffleBtn" type="button">&#128256; Shuffle</button>
         </div>
       </div>
 
-      <div class="cadence-note">Reminder from the episode: aim to share your service every 2-3 emails. The rest can just be good, honest content - that's still doing its job.</div>
+      <div class="cadence-note">Reminder from the podcast episode: aim to send one of these emails every 2-3 emails (so if you email your list once a week, send one of these every other week). The rest of the emails you send can be educational, fun, helpful, and don't need to end with a call-to-action related to your services.</div>
 
       <div class="filters" id="filters"></div>
       <div class="toggle-row">
