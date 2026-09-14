@@ -238,10 +238,13 @@ logs.
   creating it.
 
 ## 8. Still open
-- **Conversion path — partly built.** The nav CTA points at
-  `offers.whitneybateson.com/dfy-funnel/` ("Help me build my list"), and the
-  How-to-use section carries a Growth Show callout linking to Ep 134. Nothing
-  yet links to Whitney's 1:1 services or WPWS after the download buttons.
+- **Conversion path — built.** Three exits now: the nav CTA
+  ("Help me build my list"), the Growth Show callout on Ep 134 in the
+  How-to-use section, and a teal DFY Funnel CTA block at the foot of Step 2,
+  under the download buttons ("Grow Your Email List"). All three point at
+  `offers.whitneybateson.com/dfy-funnel/`. Nothing links to Whitney's 1:1
+  services or WPWS — worth revisiting if those need a route.
+  The funnel CTA currently shows on **both** builds, course included.
 - **Nav logo — done.** `logo.png` (the two-line teal script wordmark,
   1545x863 transparent PNG) sits next to the HTML and renders at 70px tall,
   44px on mobile. It needs that much height because it's a stacked two-line
