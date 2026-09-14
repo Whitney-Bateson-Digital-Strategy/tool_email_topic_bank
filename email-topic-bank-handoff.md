@@ -243,11 +243,12 @@ logs.
   title, and listen URL in that callout are still placeholders** — see the
   `TODO` comment above `.callout` in the HTML. Nothing yet links to Whitney's
   1:1 services or WPWS after the download buttons.
-- **Nav logo is a file drop.** The nav expects `logo.png` next to the HTML.
-  If it's missing the "Whitney Bateson" wordmark renders instead, so the page
-  never breaks — but the real logo has to be uploaded alongside the hero
-  assets. Roughly 2x the 42px render height (so ~84px tall), transparent PNG
-  or SVG (change the `src` extension if SVG).
+- **Nav logo — done.** `logo.png` (the two-line teal script wordmark,
+  1545x863 transparent PNG) sits next to the HTML and renders at 70px tall,
+  44px on mobile. It needs that much height because it's a stacked two-line
+  script; a single-line mark would sit around 42px. If it ever goes missing
+  the "Whitney Bateson" text wordmark renders in its place, so the nav never
+  breaks.
 - **PDF exports don't include notes generated in a previous session** — they do
   now that notes persist, but this is worth re-testing end to end.
 - **Unrelated security issue in the same project:** `clients` and
