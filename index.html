@@ -230,7 +230,15 @@ input[type=text]:focus, select:focus { outline:none; border-color:var(--coral); 
 .bank-head h2 { font-size:clamp(30px,3.4vw,38px); color:var(--teal); margin-bottom:10px; }
 .bank-head p { font-size:17px; color:var(--muted); max-width:62ch; }
 .bank-head p + p { margin-top:12px; }
-.bank-head-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:20px; }
+.bank-actions { display:flex; gap:24px; flex-wrap:wrap; align-items:center; margin-bottom:18px; }
+.btn-text {
+  background:none; border:none; padding:0;
+  font-family:'Nunito Sans', sans-serif; font-size:14px; font-weight:600;
+  letter-spacing:0.03em; color:var(--muted); cursor:pointer;
+  transition:color .15s;
+}
+.btn-text:hover { color:var(--coral); text-decoration:underline; }
+.btn-text:focus-visible { outline:2px solid var(--coral); outline-offset:3px; border-radius:4px; }
 
 .cadence-note {
   background:var(--white); border-radius:16px; padding:22px 26px;
@@ -249,7 +257,7 @@ input[type=text]:focus, select:focus { outline:none; border-color:var(--coral); 
 .chip.active { background:var(--teal); border-color:var(--teal); color:var(--white); }
 .chip:focus-visible { outline:2px solid var(--coral); outline-offset:2px; }
 
-.toggle-row { margin-bottom:28px; }
+.toggle-row { margin-bottom:14px; }
 .toggle-row label {
   display:inline-flex; align-items:center; gap:10px;
   font-size:16px; color:var(--muted); cursor:pointer;
@@ -430,10 +438,6 @@ input[type=text]:focus, select:focus { outline:none; border-color:var(--coral); 
         <p>I've taken your ideas and matched them to email structures that work well for building authentic connection while sharing aspects of your services.</p>
         <p>These starting pairings are a suggestion, not a rule - the same idea can work in almost any structure. Change them individually, or shuffle for a fresh set.</p>
         <p>Click the &ldquo;Get approach notes&rdquo; button to get my advice on how to begin writing the email - how to open it, what to focus on, and how to naturally bridge to your service or offer.</p>
-        <div class="bank-head-actions">
-          <button class="btn btn-outline btn-small" id="backBtn" type="button">&#8592; Back to brainstorm</button>
-          <button class="btn btn-outline btn-small" id="shuffleBtn" type="button">&#128256; Shuffle</button>
-        </div>
       </div>
 
       <div class="cadence-note">Reminder from the podcast episode: aim to send one of these emails every 2-3 emails (so if you email your list once a week, send one of these every other week). The rest of the emails you send can be educational, fun, helpful, and don't need to end with a call-to-action related to your services.</div>
@@ -441,6 +445,10 @@ input[type=text]:focus, select:focus { outline:none; border-color:var(--coral); 
       <div class="filters" id="filters"></div>
       <div class="toggle-row">
         <label><input type="checkbox" id="hideUsedToggle"> Hide topics I've already used</label>
+      </div>
+      <div class="bank-actions">
+        <button class="btn-text" id="backBtn" type="button">&#8592; Back to brainstorm</button>
+        <button class="btn-text" id="shuffleBtn" type="button">&#128256; Shuffle topics</button>
       </div>
       <div class="card-grid" id="cardGrid"></div>
 
