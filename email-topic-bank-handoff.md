@@ -1,16 +1,25 @@
-# Email Topic Bank — Design & Build Handoff
+# Endless Email Generator — Design & Build Handoff
 
 *Updated after the brand pass and backend build. Supersedes the earlier
 version, which described the tool as a Claude-artifact prototype with no
 backend. Sections 1–4 are unchanged reasoning and still hold; sections 5–8
 are new or rewritten.*
 
+> **Renamed 2026-09-14.** The tool is now **Endless Email Generator** (was
+> "Email Topic Bank") everywhere it's user-facing: page title, hero, PDF
+> export, and in-tool labels. File names, the Supabase table
+> (`topic_bank_sessions`), and the Edge Function (`topic-bank`) keep the old
+> name deliberately — renaming them breaks live data and deployed URLs for
+> no user-visible gain. The framework eyebrow is now "The Emails That Sell
+> Framework".
+
 ---
 
 ## 1. What this is
 
 An interactive tool implementing Whitney's two-step sales email framework
-(from the *2-Step Framework for Sales Emails* podcast episode):
+(from The Growth Show Ep 134, *The Two-Step Framework to Write Sales Emails
+That Feel Genuine*):
 
 1. **Brainstorm** — pick one service, generate 9 ideas across 3 buckets (3 each):
    - **Outcomes** — the transformation/result a client experiences
@@ -229,10 +238,16 @@ logs.
   creating it.
 
 ## 8. Still open
-- **No conversion path on the page.** Nothing links to Whitney's services, the
-  source podcast episode, or WPWS. Someone finishes, downloads a PDF, and the
-  page has nowhere to send them. Natural spots: near the cadence reminder, and
-  after the download buttons.
+- **Conversion path — partly built.** The nav CTA points at
+  `offers.whitneybateson.com/dfy-funnel/` ("Help me build my list"), and the
+  How-to-use section carries a Growth Show callout linking to Ep 134. Nothing
+  yet links to Whitney's 1:1 services or WPWS after the download buttons.
+- **Nav logo — done.** `logo.png` (the two-line teal script wordmark,
+  1545x863 transparent PNG) sits next to the HTML and renders at 70px tall,
+  44px on mobile. It needs that much height because it's a stacked two-line
+  script; a single-line mark would sit around 42px. If it ever goes missing
+  the "Whitney Bateson" text wordmark renders in its place, so the nav never
+  breaks.
 - **PDF exports don't include notes generated in a previous session** — they do
   now that notes persist, but this is worth re-testing end to end.
 - **Unrelated security issue in the same project:** `clients` and
@@ -244,7 +259,22 @@ logs.
 
 ## 9. Files
 
-- `email-topic-bank.html` — the tool. Single file, video currently inlined.
+- `index.html` — the **public** build (`VERSION = "leadgen"`): opt-in copy
+  shown on the gate, subscriber synced to Kit.
+- `course.html` — the **Ads Made Simple student** build
+  (`VERSION = "course"`): work still saves, nothing goes to Kit, no opt-in
+  notice.
+
+> **Renamed 2026-09-14.** These two swapped roles. `index.html` used to be
+> the course build (it had been renamed from `email-topic-bank-COURSE.html`)
+> and `email-topic-bank.html` was the public one. Since everything public
+> facing lives at the default file name, `index.html` is now the public build
+> and the student build moved to the self-describing `course.html`.
+> **`email-topic-bank.html` no longer exists** — any link pointing at it
+> needs updating.
+
+The two files are byte-identical apart from that one `VERSION` line;
+regenerate one from the other rather than hand-editing both.
 - `hero-loop.mp4` / `hero-loop.webm` / `hero-poster.jpg` — hero assets for the
   production swap described in section 5.
 - This document.
