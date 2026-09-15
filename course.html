@@ -259,6 +259,7 @@ input[type=text]:focus, select:focus { outline:none; border-color:var(--coral); 
   font-size:17px; color:var(--text); line-height:1.6; margin:26px 0 32px;
   border-left:5px solid var(--coral);
 }
+.cadence-note a { color:var(--coral); font-weight:700; }
 
 .filters { display:flex; flex-wrap:wrap; gap:9px; margin-bottom:20px; }
 .chip {
@@ -403,10 +404,10 @@ input[type=text]:focus, select:focus { outline:none; border-color:var(--coral); 
 <section class="tool" id="tool">
   <div class="wrap">
 
-    <section class="howto">
+    <section class="howto" id="howto">
       <h2>How to Use This Tool</h2>
-      <p>Start with Step 1 to pick one service you want to focus on and promote to your email list, then fill in nine quick answers based on that service - three outcomes, three loved features, three hesitations. From there, each idea gets matched to an email structure in Step 2, and now you've got a real bank of email topics to pull from any time you're staring at a blank page wondering what to send next. I even give you some tips on how to approach each email topic as you write it.</p>
-      <p>Use the download buttons to save the ideas, then when you're ready to focus on another service or want to generate more ideas, just hit the &ldquo;clear all&rdquo; button to start over again.</p>
+      <p>Start with Step 1 to pick one service you want to focus on and promote to your email list, then fill in nine quick answers based on that service. From there, each idea gets matched to an email structure in Step 2, and now you've got a real bank of email topics to pull from. I even give you tips on how to approach each email as you write it!</p>
+      <p>Use the download buttons at the bottom to export the ideas. When you're ready to focus on another service or want to generate more ideas, just hit the &ldquo;clear all&rdquo; button to start over.</p>
       <div class="callout">
         Want to hear me talk through this whole framework? Check out Episode 134 of The Growth Show, <em>The Two-Step Framework to Write Sales Emails That Feel Genuine</em> &#8594;
         <a href="https://whitneybateson.com/ep-134-the-two-step-framework-to-write-sales-emails-that-feel-genuine/" target="_blank" rel="noopener">listen here</a>
@@ -460,7 +461,7 @@ input[type=text]:focus, select:focus { outline:none; border-color:var(--coral); 
         <p>Click the &ldquo;Get approach notes&rdquo; button to get my advice on how to begin writing the email - how to open it, what to focus on, and how to naturally bridge to your service or offer.</p>
       </div>
 
-      <div class="cadence-note">Reminder from the podcast episode: aim to send one of these emails every 2-3 emails (so if you email your list once a week, send one of these every other week). The rest of the emails you send can be educational, fun, helpful, and don't need to end with a call-to-action related to your services.</div>
+      <div class="cadence-note">Reminder from <a href="https://whitneybateson.com/ep-134-the-two-step-framework-to-write-sales-emails-that-feel-genuine/" target="_blank" rel="noopener">Episode 134 of The Growth Show</a>: aim to send one of these emails every 2-3 emails (so if you email your list once a week, send one of these every other week). The rest of the emails you send can be educational, fun, helpful, and don't need to end with a call-to-action related to your services.</div>
 
       <div class="filters" id="filters"></div>
       <div class="toggle-row">
@@ -745,6 +746,7 @@ let hideUsed = false;
 
 /* ---------- Step switching ---------- */
 function showPanel(n){
+  document.getElementById('howto').classList.toggle('hidden', n!==1);
   document.getElementById('tab1').classList.toggle('active', n===1);
   document.getElementById('tab2').classList.toggle('active', n===2);
   document.getElementById('panel1').classList.toggle('hidden', n!==1);
